@@ -16,11 +16,11 @@ node_3::~node_3()
 }
 void node_3::callback(const sensor_msgs::ImageConstPtr& msg)
 {
-  cv::Mat img=cv_bridge::toCvShare(msg,"bgr8")->image;
-  pix=QPixmap::fromImage(QImage((const unsigned char*)(img.data),img.cols,img.rows,img.step,QImage::Format_Indexed8));
+  cv::Mat img=cv_bridge::toCvShare(msg,"rgb8")->image;
+  pix=QPixmap::fromImage(QImage(img.data,img.cols,img.rows,img.step,QImage::Format_RGB888));
   int w=ui->label->width();
   int h=ui->label->height();
-  ui->label->setPixmap(pix.scaled(300,300,Qt::KeepAspectRatio));
+  ui->label->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
 
 
 }
@@ -29,16 +29,22 @@ void node_3::callback(const sensor_msgs::ImageConstPtr& msg)
 
 void node_3::on_checkBox_clicked(bool checked)
 {
+  std_msgs::Int32 msg;
    if(checked)
    {
 
 
-     std_msgs::Int32 msg;
+
      msg.data=1;
      pub.publish(msg);
-
-
-
    }
+   else
+   {
+    msg.data=0;
+    pub.publish(msg);
+   }
+
+
+
 
 }
